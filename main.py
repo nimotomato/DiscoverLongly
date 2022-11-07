@@ -7,6 +7,7 @@ sp = spotipy.Spotify(auth_manager=SpotifyOAuth(scope=scope))
 source_playlist_name = "Discover Weekly"
 list_length_max = 100
 
+
 def main():
     #Get id of source playlist.
     source_playlist_id = get_playlist_id(source_playlist_name, sp)
@@ -14,7 +15,7 @@ def main():
     #Get id of target playlist.
     target_playlist_id = get_playlist_id("Discover Longly", sp)
 
-    #Get ids of all tracks in source playlist.
+    #Get uris of all unique tracks in source playlist.
     track_uris = get_unique_uris(target_playlist_id, source_playlist_id, sp)
 
     #Add tracks to target playlist.
@@ -51,7 +52,8 @@ def get_uris_long_list(playlist_id, sp) -> list:
     
 
 def get_unique_uris(target_playlist_id, source_playlist_id, sp):
-    
+    #Compare target and source list for overlapping uris.
+
     target_uris = get_uris_long_list(target_playlist_id, sp)
     source_uris = get_tracks_uri(source_playlist_id, sp, 30)
 
@@ -68,6 +70,8 @@ def get_unique_uris(target_playlist_id, source_playlist_id, sp):
 def get_tracks_uri(source_playlist_id, sp, limit, offset=0):
     #Get all data from playlist.
     tracks_raw = sp.playlist_tracks(source_playlist_id, limit=limit, offset=offset)
+
+    #Uri storage
     uri_list = []
 
     #Store list of track uris.
@@ -81,11 +85,22 @@ def get_tracks_uri(source_playlist_id, sp, limit, offset=0):
 def get_playlist_id(playlist_name, sp):
     #Get 50 playlists.
     playlists = sp.current_user_playlists(limit=50)
-    #Search for playlist name, return its ID.
-    for playlist in playlists['items']:
-        if playlist['name'] == playlist_name:
-            print("Getting list id...")
-            return playlist['id']
+
+    counter = 1
+
+    #While we still get more playlists.
+    while len(playlists) > 0:
+        #Search for playlist name, return its ID if found.
+        for playlist in playlists['items']:
+            if playlist['name'] == playlist_name:
+                print("Getting list id...")
+                return playlist['id']
+        #Get 50 more playlists.
+        playlists = sp.current_user_playlists(limit=50, offset=50*counter)
+
+    #Inform user playlist was not found.
+    print("Playlist not found." )
+    return None
 
 
 if __name__ == "__main__":
