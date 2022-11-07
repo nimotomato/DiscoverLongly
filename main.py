@@ -1,11 +1,9 @@
 import spotipy
-from spotipy.oauth2 import SpotifyOAuth, SpotifyClientCredentials
-import keys
+from spotipy.oauth2 import SpotifyOAuth
 
-client_credentials_manager = SpotifyClientCredentials(keys.id, keys.secret)
-sp = spotipy.Spotify(client_credentials_manager=client_credentials_manager)
-#scope = 'playlist-modify-private', 'playlist-read-private'
-#sp = spotipy.Spotify(auth_manager=SpotifyOAuth(scope=scope))
+
+scope = 'playlist-modify-private', 'playlist-read-private'
+sp = spotipy.Spotify(auth_manager=SpotifyOAuth(scope=scope))
 source_playlist_name = "Discover Weekly"
 
 
