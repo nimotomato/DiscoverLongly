@@ -5,7 +5,7 @@ from spotipy.oauth2 import SpotifyOAuth
 scope = 'playlist-modify-private', 'playlist-read-private'
 sp = spotipy.Spotify(auth_manager=SpotifyOAuth(scope=scope))
 source_playlist_name = "Discover Weekly"
-
+list_length_max = 100
 
 def main():
     #Get id of source playlist.
@@ -31,16 +31,16 @@ def get_uris_long_list(playlist_id, sp) -> list:
     target_uris_master = []
 
     #Uri list of max size
-    target_uris = get_tracks_uri(playlist_id, sp, 100)
+    target_uris = get_tracks_uri(playlist_id, sp, list_length_max)
     
     #Counts iterations
     counter = 1
 
     #Keeps moving each time a max size list has been spotted
-    while len(target_uris) >= 100:
+    while len(target_uris) >= list_length_max:
         for uri in target_uris:
             target_uris_master.append(uri)
-        target_uris = get_tracks_uri(playlist_id, sp, 100, offset=counter*100)
+        target_uris = get_tracks_uri(playlist_id, sp, list_length_max, offset=counter*list_length_max)
         counter += 1
 
     #Appends remaining uris to master list
