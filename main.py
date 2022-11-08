@@ -6,7 +6,8 @@ scope = 'playlist-modify-private', 'playlist-read-private'
 sp = spotipy.Spotify(auth_manager=SpotifyOAuth(scope=scope))
 source_playlist_name = "Discover Weekly"
 list_length_max = 100
-
+discover_weekly_length = 30
+playlist_count_max = 50
 
 def main():
     #Get id of source playlist.
@@ -55,7 +56,7 @@ def get_unique_uris(target_playlist_id, source_playlist_id, sp):
     #Compare target and source list for overlapping uris.
 
     target_uris = get_uris_long_list(target_playlist_id, sp)
-    source_uris = get_tracks_uri(source_playlist_id, sp, 30)
+    source_uris = get_tracks_uri(source_playlist_id, sp, discover_weekly_length)
 
     uri_list = []
 
@@ -84,7 +85,7 @@ def get_tracks_uri(source_playlist_id, sp, limit, offset=0):
 
 def get_playlist_id(playlist_name, sp):
     #Get 50 playlists.
-    playlists = sp.current_user_playlists(limit=50)
+    playlists = sp.current_user_playlists(limit=playlist_count_max)
 
     counter = 1
 
@@ -96,7 +97,7 @@ def get_playlist_id(playlist_name, sp):
                 print("Getting list id...")
                 return playlist['id']
         #Get 50 more playlists.
-        playlists = sp.current_user_playlists(limit=50, offset=50*counter)
+        playlists = sp.current_user_playlists(limit=playlist_count_max, offset=playlist_count_max*counter)
 
     #Inform user playlist was not found.
     print("Playlist not found." )
