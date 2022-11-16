@@ -1,5 +1,7 @@
 import spotipy
+from keys import cmd
 from spotipy.oauth2 import SpotifyOAuth
+from os import system
 
 
 scope = 'playlist-modify-private', 'playlist-read-private'
@@ -9,7 +11,10 @@ list_length_max = 100
 discover_weekly_length = 30
 playlist_count_max = 50
 
+
 def main():
+    #Authenticate:
+    system(cmd)
     #Get id of source playlist.
     source_playlist_id = get_playlist_id(source_playlist_name, sp)
     
